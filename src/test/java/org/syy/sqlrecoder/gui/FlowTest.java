@@ -1,4 +1,4 @@
-package org.syy.gui;
+package org.syy.sqlrecoder.gui;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
