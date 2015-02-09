@@ -10,6 +10,7 @@ $RECYCLE.BIN/
 
 # intellij idea
 .idea
+target
 *.iml
 
 # Windows Installer files
