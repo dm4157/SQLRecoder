@@ -1,0 +1,2 @@
+1.安装IKAnalyzer到本地仓库
+mvn install:install-file -DgroupId=org.wltea -DartifactId=ikAnalyzer -Dversion=2.0.12 -Dpackaging=jar -Dfile=IKAnalyzer2012FF_u1.jar
