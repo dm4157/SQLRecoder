@@ -1,5 +1,5 @@
 #SQLRecoder
-致 **<i class="icon-moon"></i>XMS**
+致 **XMS**[^footnote]
 
 ---
 
@@ -10,3 +10,6 @@
 > * 随时记录`SQL`语句和描述，告别重写
 > * 随意浏览已保存的`SQL`，品味点滴成就感
 > * 快速搜索历史`SQL`，提高工作效
+
+---
+[^footnote]: <span class="octicon octicon-pencil"></span> with <span class="octicon octicon-heart"></span> by **DDG**
