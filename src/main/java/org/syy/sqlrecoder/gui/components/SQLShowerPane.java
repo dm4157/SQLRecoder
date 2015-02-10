@@ -22,7 +22,7 @@ public class SQLShowerPane extends VBox{
         this.setPrefSize(150, 50);
         this.setSpacing(5);
 
-        Label descriptionLabel = new Label(recoder.getDesciption());
+        Label descriptionLabel = new Label(recoder.getDescription());
         Label sqlLabel = new Label(recoder.getSql());
         this.getChildren().addAll(descriptionLabel, sqlLabel);
     }

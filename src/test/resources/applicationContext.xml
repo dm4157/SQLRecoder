@@ -10,4 +10,8 @@
     <context:annotation-config/>
     <context:component-scan base-package="org.syy.sqlrecoder"/>
 
+    
+    <bean id="indexDir" class="java.io.File">
+        <constructor-arg type="java.lang.String" value="e:/SQLRecoderIndex"/>
+    </bean>
 </beans>

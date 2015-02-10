@@ -5,23 +5,30 @@ package org.syy.sqlrecoder.entity;
  * Created by Administrator on 2015/2/8.
  */
 public class SQLRecoder {
-    private String desciption;
+    private String description;
     private String sql;
+    private long timeToken;
 
     public SQLRecoder() {
     }
 
-    public SQLRecoder(String desciption, String sql) {
-        this.desciption = desciption;
+    public SQLRecoder(String description, String sql) {
+        this.description = description;
         this.sql = sql;
     }
 
-    public String getDesciption() {
-        return desciption;
+    public SQLRecoder(String description, String sql, long timeToken) {
+        this.description = description;
+        this.sql = sql;
+        this.timeToken = timeToken;
     }
 
-    public void setDesciption(String desciption) {
-        this.desciption = desciption;
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getSql() {
@@ -30,5 +37,13 @@ public class SQLRecoder {
 
     public void setSql(String sql) {
         this.sql = sql;
+    }
+
+    public long getTimeToken() {
+        return timeToken;
+    }
+
+    public void setTimeToken(long timeToken) {
+        this.timeToken = timeToken;
     }
 }
