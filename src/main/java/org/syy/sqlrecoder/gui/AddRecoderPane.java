@@ -4,12 +4,18 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * 添加SQL记录的界面
  * Created by Administrator on 2015/2/9.
  */
+@Component
 public class AddRecoderPane extends BorderPane{
+
+    @Autowired
+    private MainFrame mainFrame;
 
     private TextArea sqlArea;
     private TextArea descriptionArea;
@@ -25,6 +31,9 @@ public class AddRecoderPane extends BorderPane{
         BorderPane titlePane = new BorderPane();
 
         cancelButton = new Button("返回");
+        cancelButton.setOnAction(event -> {
+            mainFrame.showSQLSquare();
+        });
         titlePane.setLeft(cancelButton);
 
         doneButton = new Button("记下来");
@@ -43,5 +52,6 @@ public class AddRecoderPane extends BorderPane{
 
         contentBox.getChildren().addAll(sqlArea, descriptionArea);
         this.setCenter(contentBox);
+
     }
 }
