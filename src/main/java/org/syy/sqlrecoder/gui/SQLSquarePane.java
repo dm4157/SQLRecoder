@@ -13,7 +13,7 @@ import java.util.List;
  * 用来展示SQL文件
  * Created by Administrator on 2015/2/8.
  */
-@Component
+@Component("sqlSquarePane")
 public class SQLSquarePane extends FlowPane{
 
     private List<SQLRecoder> recoders;

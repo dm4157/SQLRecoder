@@ -6,6 +6,7 @@ import javafx.scene.layout.BorderPane;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
+import org.syy.sqlrecoder.gui.components.RootBorderPane;
 
 /**
  * 搜索面板
@@ -13,15 +14,12 @@ import org.springframework.stereotype.Component;
  * 2.常用搜索项
  * Created by Administrator on 2015/2/8.
  */
-@Component
+@Component("searchPane")
 public class SearchPane extends BorderPane {
 
     @Lazy
     @Autowired
-    private AddRecoderPane addRecoderPane;
-
-    @Autowired
-    private MainFrame mainFrame;
+    private RootBorderPane rootBorderPane;
 
     private TextField searchTextField;
     private Button searchButton;
@@ -47,7 +45,7 @@ public class SearchPane extends BorderPane {
 
         addRecoderButton = new Button("新增");
         addRecoderButton.setOnAction(event -> {
-            mainFrame.showAddPane();
+            rootBorderPane.showAddPane();
         });
         this.setLeft(addRecoderButton);
     }
