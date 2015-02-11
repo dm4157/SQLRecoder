@@ -1,6 +1,7 @@
 package org.syy.sqlrecoder.gui.components;
 
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,8 @@ public class RootBorderPane extends BorderPane {
 
     /**真正的内容面板*/
     private BorderPane contentPane;
+    /**主舞台*/
+    private Stage primaryStage;
 
     @Autowired
     private SearchPane searchPane;
@@ -42,5 +45,13 @@ public class RootBorderPane extends BorderPane {
 
     public void showSQLSquare() {
         setCenter(contentPane);
+    }
+
+    public Stage getPrimaryStage() {
+        return primaryStage;
+    }
+
+    public void setPrimaryStage(Stage primaryStage) {
+        this.primaryStage = primaryStage;
     }
 }
