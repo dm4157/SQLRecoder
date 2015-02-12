@@ -1,8 +1,13 @@
 package org.syy.sqlrecoder.gui.components;
 
+import javafx.geometry.Insets;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.VBox;
+import org.apache.commons.lang3.StringUtils;
 import org.syy.sqlrecoder.entity.SQLRecoder;
+
+import javax.swing.border.LineBorder;
 
 /**
  * SQL文件展示面板
@@ -19,11 +24,19 @@ public class SQLShowerPane extends VBox{
     }
 
     private void createUserInterface() {
-        this.setPrefSize(150, 50);
+        this.setPrefSize(250, 50);
         this.setSpacing(5);
 
-        Label descriptionLabel = new Label(recoder.getDescription());
+        String description = recoder.getDescription();
+        if (StringUtils.isBlank(description)) {
+            description = "没提示呢";
+        }
+        Label descriptionLabel = new Label(description);
         Label sqlLabel = new Label(recoder.getSql());
         this.getChildren().addAll(descriptionLabel, sqlLabel);
+
+        // 线性边框
+        this.setPadding(new Insets(2, 4, 2, 4));
+        this.setId("sqlShowerPane");
     }
 }

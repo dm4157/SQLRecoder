@@ -32,32 +32,66 @@ public class SQLRecoderService implements ISQLRecoderSaver, ISQLRecoderReader{
      * @throws SaveSQLRecoderException
      */
     @Override
-    public void saveOne(SQLRecoder recoder) throws SaveSQLRecoderException {
-        Assert.isNull(recoder, "存储记录不能为null");
-        Assert.isNull(recoder.getSql(), "SQL脚本不能为null");
+    public void saveOne(SQLRecoder recoder) throws SaveSQLRecoderException, IllegalArgumentException {
+        Assert.notNull(recoder, "存储记录不能为null");
+        Assert.notNull(recoder.getSql(), "SQL脚本不能为null");
 
         writer.write(recoder);
     }
 
     @Override
-    public List<SQLRecoder> searchAllField(String key, int pageNo) {
+    public List<SQLRecoder> searchAllFieldWithCondition(String key, int pageNo) {
         Query query = searcher.keyQuery(key, "A");
-        List<SQLRecoder> data = searcher.getPageList(query, pageNo);
+        List<SQLRecoder> data = searcher.getPageWithCondition(query, pageNo);
         return data;
     }
 
     @Override
     public List<SQLRecoder> searchSqlField(String key, int pageNo) {
         Query query = searcher.keyQuery(key, "S");
-        List<SQLRecoder> data = searcher.getPageList(query, pageNo);
+        List<SQLRecoder> data = searcher.getPageWithCondition(query, pageNo);
         return data;
     }
 
     @Override
     public List<SQLRecoder> searchDescriptionField(String key, int pageNo) {
         Query query = searcher.keyQuery(key, "D");
-        List<SQLRecoder> data = searcher.getPageList(query, pageNo);
+        List<SQLRecoder> data = searcher.getPageWithCondition(query, pageNo);
         return data;
+    }
+
+    @Override
+    public int numDocsForAllField(String key) {
+        Query query = searcher.keyQuery(key, "A");
+        return searcher.numDocsWithCondition(query);
+    }
+
+    @Override
+    public int numDocsForSqlField(String key) {
+        Query query = searcher.keyQuery(key, "S");
+        return searcher.numDocsWithCondition(query);
+    }
+
+    @Override
+    public int numDocsForDescriptionField(String key) {
+        Query query = searcher.keyQuery(key, "D");
+        return searcher.numDocsWithCondition(query);
+    }
+
+    @Override
+    public List<SQLRecoder> searchDescriptionOrderByTime(int pageNo) {
+        List<SQLRecoder> data = searcher.getPage(pageNo);
+        return data;
+    }
+
+    @Override
+    public int numDocsWithoutCondition() {
+        return searcher.numDocsWithoutCondition();
+    }
+
+    @Override
+    public int numDocs() {
+        return searcher.numDocs();
     }
 }
 

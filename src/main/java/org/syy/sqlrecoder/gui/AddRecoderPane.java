@@ -9,7 +9,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
-import org.syy.sqlrecoder.gui.components.ModalDialog;
+import org.syy.sqlrecoder.entity.SQLRecoder;
+import org.syy.sqlrecoder.exception.SaveSQLRecoderException;
+import org.syy.sqlrecoder.gui.components.Dialog;
 import org.syy.sqlrecoder.gui.components.RootBorderPane;
 import org.syy.sqlrecoder.service.SQLRecoderService;
 
@@ -73,12 +75,21 @@ public class AddRecoderPane extends BorderPane{
      * @param event
      */
     private void addActionPerformed(ActionEvent event) {
-//        String sqlStr = sqlArea.getText();
-//        String descriptionStr = descriptionArea.getText();
-//
-//        if (StringUtils.isBlank(sqlStr)) {
-//
-//        }
-        ModalDialog dialog = new ModalDialog(rootBorderPane.getPrimaryStage(), "添加信息", "SQL为空还记录什么啊，二货");
+        String sqlStr = sqlArea.getText();
+        String descriptionStr = descriptionArea.getText();
+
+        if (StringUtils.isBlank(sqlStr)) {
+            Dialog.showMessageDialog(rootBorderPane.getPrimaryStage(), "添加信息", "SQL为空还记录什么啊，二货");
+        } else {
+            SQLRecoder sqlRecoder = new SQLRecoder(descriptionStr, sqlStr, System.currentTimeMillis());
+            try {
+                sqlRecoderService.saveOne(sqlRecoder);
+                Dialog.showMessageDialog(rootBorderPane.getPrimaryStage(), "添加成功","勤记录是好习惯哦！");
+            } catch (SaveSQLRecoderException e) {
+                Dialog.showMessageDialog(rootBorderPane.getPrimaryStage(), "添加失败", e.getMessage());
+            } catch (IllegalArgumentException e) {
+                Dialog.showMessageDialog(rootBorderPane.getPrimaryStage(), "添加失败", e.getMessage());
+            }
+        }
     }
 }

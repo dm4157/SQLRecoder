@@ -1,27 +1,36 @@
 package org.syy.sqlrecoder.gui.components;
 
+import javafx.geometry.Insets;
+import javafx.scene.Node;
+import javafx.scene.control.Pagination;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
+import org.syy.sqlrecoder.entity.SQLRecoder;
 import org.syy.sqlrecoder.gui.AddRecoderPane;
 import org.syy.sqlrecoder.gui.SQLSquarePane;
 import org.syy.sqlrecoder.gui.SearchPane;
+import org.syy.sqlrecoder.service.SQLRecoderService;
+import org.syy.sqlrecoder.util.PageUtil;
 
 import javax.annotation.PostConstruct;
+import java.util.List;
 
 /**
  * Created by Administrator on 2015/2/11.
  */
 //@DependsOn({"addRecoderPane", "searchPane", "sqlSquarePane"})
-@Component
+@Component("rootBorderPane")
 public class RootBorderPane extends BorderPane {
 
     /**真正的内容面板*/
     private BorderPane contentPane;
     /**主舞台*/
     private Stage primaryStage;
+    private Pagination pagination = null;
+    private int currentPage = 1;
 
     @Autowired
     private SearchPane searchPane;
@@ -30,13 +39,43 @@ public class RootBorderPane extends BorderPane {
     @Autowired
     private AddRecoderPane addRecoderPane;
 
+    @Autowired
+    private SQLRecoderService sqlRecoderService;
+
     @PostConstruct
     public void createUserInterface() {
+        searchPane.setRootBorderPane(this);
+
         contentPane = new BorderPane();
         contentPane.setTop(searchPane);
-        contentPane.setCenter(sqlSquarePane);
+
+        //分页
+        createNewPagination();
+        contentPane.setCenter(pagination);
 
         this.setCenter(contentPane);
+    }
+
+    /**
+     * 创建一个分页器
+     */
+    public void createNewPagination() {
+        pagination = new Pagination();
+        // 最大页码
+        pagination.setPageCount(PageUtil.pageNum(searchPane.findHowToCount()));
+        // 第一页从0开始
+        pagination.setCurrentPageIndex(0);
+        pagination.setPageFactory(new Callback<Integer, Node>() {
+            @Override public Node call(Integer pageIndex) {
+                // lucene查询是计算页码是从1开始的，所以+1
+                currentPage = pageIndex+1;
+                // 搜索结果
+                List<SQLRecoder> data = searchPane.findHowToSearch();
+                sqlSquarePane =  new SQLSquarePane(data);
+                return sqlSquarePane;
+            }
+        });
+        contentPane.setCenter(pagination);
     }
 
     public void showAddPane() {
@@ -54,4 +93,13 @@ public class RootBorderPane extends BorderPane {
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
     }
+
+    public int getCurrentPage() {
+        return currentPage;
+    }
+
+    public void setCurrentPage(int currentPage) {
+        this.currentPage = currentPage;
+    }
+
 }

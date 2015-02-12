@@ -15,10 +15,13 @@ import javafx.stage.Stage;
 
 import java.net.URISyntaxException;
 
-public class ModalDialog {
+/**
+ * 对话框，你信么
+ */
+public class Dialog {
     private Button okButton;
 
-    public ModalDialog(final Stage stg, String title, String message) {
+    public Dialog(final Stage stg, String title, String message) {
         okButton = new Button();
 
         final Stage stage = new Stage();
@@ -34,15 +37,15 @@ public class ModalDialog {
         Scene scene = new Scene(root, 270, 100, Color.GRAY);
 
         // 图标
-        ModalDialog.class.getResource("/").getPath();
+        Dialog.class.getResource("/").getPath();
         Image image = null;
         try {
-            image = new Image(ModalDialog.class.getResource("/").toURI() + "img/dialog/info.png");
+            image = new Image(Dialog.class.getResource("/").toURI() + "img/dialog/info.png");
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
         ImageView imageView = new ImageView(image);
-        FlowPane imagePane = PaneTools.createCenterFlowPane(new Insets(5));
+        FlowPane imagePane = PaneTools.createCenterFlowPane(new Insets(10, 0, 0, 10));
         imagePane.getChildren().add(imageView);
         root.setLeft(imagePane);
 
@@ -53,18 +56,29 @@ public class ModalDialog {
         root.setCenter(messageLabel);
 
         // 设置按钮
-        okButton.setOnAction(event -> stage.hide());
+        okButton.setOnAction(event -> stage.close());
         okButton.setText("知道了");
-        FlowPane buttonPane = PaneTools.createCenterFlowPane(new Insets(10, 10, 10, 15));
+        FlowPane buttonPane = PaneTools.createCenterFlowPane(new Insets(0, 10, 10, 15));
         buttonPane.getChildren().add(okButton);
 
         root.setBottom(buttonPane);
 
         stage.setScene(scene);
+        stage.setResizable(false);
         stage.show();
     }
 
+    /**
+     * 展示一个信息提示对话框
+     * @param stg       是否模态，null为非模态，非null即模态的对象
+     * @param title     标题
+     * @param message   信息内容
+     */
+    public static void showMessageDialog(final Stage stg, String title, String message) {
+        new Dialog(stg, title, message);
+    }
+
     public static void main(String[] args) throws URISyntaxException {
-        System.out.println(ModalDialog.class.getResource("/").toURI());
+        System.out.println(Dialog.class.getResource("/").toURI());
     }
 }

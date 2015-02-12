@@ -3,10 +3,14 @@ package org.syy.sqlrecoder.gui;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
+import org.syy.sqlrecoder.entity.SQLRecoder;
 import org.syy.sqlrecoder.gui.components.RootBorderPane;
+import org.syy.sqlrecoder.service.SQLRecoderService;
+
+import java.util.List;
 
 /**
  * 搜索面板
@@ -17,9 +21,9 @@ import org.syy.sqlrecoder.gui.components.RootBorderPane;
 @Component("searchPane")
 public class SearchPane extends BorderPane {
 
-    @Lazy
-    @Autowired
     private RootBorderPane rootBorderPane;
+    @Autowired
+    private SQLRecoderService sqlRecoderService;
 
     private TextField searchTextField;
     private Button searchButton;
@@ -36,10 +40,16 @@ public class SearchPane extends BorderPane {
         BorderPane inputSearchPane = new BorderPane();
         // 搜索框
         searchTextField = new TextField();
+        searchTextField.setOnAction(event -> {
+            newSearch();
+        });
         inputSearchPane.setCenter(searchTextField);
 
         // 搜索按钮
         searchButton = new Button("快找啊");
+        searchButton.setOnAction(event -> {
+            newSearch();
+        });
         inputSearchPane.setRight(searchButton);
         this.setBottom(inputSearchPane);
 
@@ -48,5 +58,50 @@ public class SearchPane extends BorderPane {
             rootBorderPane.showAddPane();
         });
         this.setLeft(addRecoderButton);
+    }
+
+    /**
+     * 新的搜索
+     */
+    private void newSearch() {
+        rootBorderPane.createNewPagination();
+    }
+
+    /**
+     * 根据条件确定如何去查找
+     * 并给出结果
+     * @return
+     */
+    public List<SQLRecoder> findHowToSearch() {
+        String key = searchTextField.getText().trim();
+        List<SQLRecoder>  data;
+        if (StringUtils.isBlank(key)) {
+            data = sqlRecoderService.searchDescriptionOrderByTime(rootBorderPane.getCurrentPage());
+        } else {
+            data = sqlRecoderService.searchAllFieldWithCondition(key, rootBorderPane.getCurrentPage());
+        }
+
+        return data;
+    }
+
+    /**
+     * 根据关键字确定如何计算总条数
+     * @return
+     */
+    public int findHowToCount() {
+        String key = searchTextField.getText().trim();
+        if (StringUtils.isBlank(key)) {
+            return sqlRecoderService.numDocsWithoutCondition();
+        } else {
+            return sqlRecoderService.numDocsForAllField(key);
+        }
+    }
+
+    public RootBorderPane getRootBorderPane() {
+        return rootBorderPane;
+    }
+
+    public void setRootBorderPane(RootBorderPane rootBorderPane) {
+        this.rootBorderPane = rootBorderPane;
     }
 }

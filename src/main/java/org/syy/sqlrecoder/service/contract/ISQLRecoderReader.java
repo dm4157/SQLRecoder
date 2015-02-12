@@ -11,8 +11,13 @@ import java.util.List;
  */
 public interface ISQLRecoderReader {
 
-    public List<SQLRecoder> searchAllField(String key, int pageNo);
+    public List<SQLRecoder> searchAllFieldWithCondition(String key, int pageNo);
     public List<SQLRecoder> searchSqlField(String key, int pageNo);
     public List<SQLRecoder> searchDescriptionField(String key, int pageNo);
-
+    public int numDocsForAllField(String key);
+    public int numDocsForSqlField(String key);
+    public int numDocsForDescriptionField(String key);
+    public List<SQLRecoder> searchDescriptionOrderByTime(int pageNo);
+    public int numDocsWithoutCondition();
+    public int numDocs();
 }

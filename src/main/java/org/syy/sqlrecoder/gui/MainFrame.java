@@ -20,8 +20,11 @@ public class MainFrame extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         root =  SpringContainer.me().getBean(RootBorderPane.class);
-
+        root.setPrimaryStage(primaryStage);
+        primaryStage.setTitle("SQLRecoder");
         primaryStage.setScene(new Scene(root, 600, 400));
+
+        primaryStage.getScene().getStylesheets().add(getClass().getResource("/").toString() + "/css/main.css");
         primaryStage.show();
     }
 

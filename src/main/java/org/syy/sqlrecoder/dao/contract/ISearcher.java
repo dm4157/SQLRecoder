@@ -1,6 +1,5 @@
 package org.syy.sqlrecoder.dao.contract;
 
-import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.syy.sqlrecoder.entity.SQLRecoder;
 
@@ -13,12 +12,13 @@ import java.util.List;
 public interface ISearcher {
 
     /**
-     * 分页查询
+     * 分页查询,有条件的
      * @param query
      * @param pageNo
      * @return
      */
-    public List<SQLRecoder> getPageList(Query query, int pageNo);
+    public List<SQLRecoder> getPageWithCondition(Query query, int pageNo);
+    public int numDocsWithCondition(Query query);
 
     /**
      * 根据关键字组装查询条件
@@ -27,4 +27,18 @@ public interface ISearcher {
      * @return
      */
     public Query keyQuery(String key, String field);
+
+    /**
+     * 分页查询，无条件的
+     * @param pageNo
+     * @return
+     */
+    public List<SQLRecoder> getPage(int pageNo);
+    public int numDocsWithoutCondition();
+
+    /**
+     * 获得最大文档数
+     * @return
+     */
+    public int numDocs();
 }

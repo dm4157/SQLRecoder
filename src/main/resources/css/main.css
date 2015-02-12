@@ -1,0 +1,6 @@
+#sqlShowerPane {
+    -fx-border-style: solid;
+    -fx-border-color: deepskyblue;
+    -fx-border-width: 3px;
+    -fx-background-color: gainsboro;
+}

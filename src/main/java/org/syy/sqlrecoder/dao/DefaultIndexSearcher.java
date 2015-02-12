@@ -4,12 +4,12 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.*;
 import org.apache.lucene.store.FSDirectory;
-import org.apache.lucene.util.Version;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.syy.sqlrecoder.constant.IndexConstants;
@@ -65,6 +65,14 @@ public class DefaultIndexSearcher implements ISearcher {
      * @return
      */
     private IndexSearcher getSearcher() {
+        return new IndexSearcher(getReader());
+    }
+
+    /**
+     * 获得最新的indexReader
+     * @return
+     */
+    private IndexReader getReader() {
         if (null != reader) {
             try {
                 DirectoryReader tmp = DirectoryReader.openIfChanged(reader);
@@ -75,8 +83,14 @@ public class DefaultIndexSearcher implements ISearcher {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        } else {
+            try {
+                reader = DirectoryReader.open(FSDirectory.open(indexDir));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        return new IndexSearcher(reader);
+        return reader;
     }
 
     /**
@@ -87,7 +101,7 @@ public class DefaultIndexSearcher implements ISearcher {
      * @return
      */
     @Override
-    public List<SQLRecoder> getPageList(Query query, int pageNo) {
+    public List<SQLRecoder> getPageWithCondition(Query query, int pageNo) {
         IndexSearcher searcher = this.getSearcher();
         try {
             TopDocs results = searcher.search(query, pageNo * IndexConstants.PAGESIZE);
@@ -96,7 +110,7 @@ public class DefaultIndexSearcher implements ISearcher {
                 return null;
             } else {
                 List<SQLRecoder> data = new ArrayList<SQLRecoder>();
-                for (int i = (pageNo - 1) * IndexConstants.PAGESIZE; i < pageNo * IndexConstants.PAGESIZE; i++) {
+                for (int i = (pageNo - 1) * IndexConstants.PAGESIZE; i < Math.min(pageNo * IndexConstants.PAGESIZE, hits.length); i++) {
                     Document doc = searcher.doc(hits[i].doc);
                     SQLRecoder recoder = new SQLRecoder(doc.get("description"), doc.get("sql"), Long.parseLong(doc.get("timeToken")));
                     data.add(recoder);
@@ -107,6 +121,19 @@ public class DefaultIndexSearcher implements ISearcher {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public int numDocsWithCondition(Query query) {
+        IndexSearcher searcher = this.getSearcher();
+        TopDocs results;
+        try {
+            results = searcher.search(query, IndexConstants.MAXUSEFULDOC);
+            return results.totalHits;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     /**
@@ -127,6 +154,9 @@ public class DefaultIndexSearcher implements ISearcher {
                 case "S":
                     QueryParser sqlParser = new QueryParser("sql", analyzer);
                     return sqlParser.parse(key);
+                case "*":
+                    WildcardQuery wildcardQuery = new WildcardQuery(new Term("sql", "*"));
+                    return wildcardQuery;
                 default:
                     String[] fields = {"description", "sql"};
                     QueryParser allParser = new MultiFieldQueryParser(fields, analyzer);
@@ -139,5 +169,49 @@ public class DefaultIndexSearcher implements ISearcher {
         return null;
     }
 
+    @Override
+    public List<SQLRecoder> getPage(int pageNo) {
+        IndexSearcher searcher = this.getSearcher();
+        try {
+            Query query = keyQuery(null, "*");
+            SortField sortField = new SortField("timeToken", SortField.Type.LONG, true);
+            Sort sort = new Sort(sortField);
+
+            TopDocs results = searcher.search(query, pageNo * IndexConstants.PAGESIZE, sort);
+            ScoreDoc[] hits = results.scoreDocs;
+            if (hits.length <= (pageNo - 1) * IndexConstants.PAGESIZE) {
+                return null;
+            } else {
+                List<SQLRecoder> data = new ArrayList<SQLRecoder>();
+                for (int i = (pageNo - 1) * IndexConstants.PAGESIZE; i < Math.min(pageNo * IndexConstants.PAGESIZE, hits.length); i++) {
+                    Document doc = searcher.doc(hits[i].doc);
+                    SQLRecoder recoder = new SQLRecoder(doc.get("description"), doc.get("sql"), Long.parseLong(doc.get("timeToken")));
+                    data.add(recoder);
+                }
+                return data;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public int numDocsWithoutCondition() {
+        IndexSearcher searcher = this.getSearcher();
+            Query query = keyQuery(null, "*");
+        try {
+            TopDocs results = searcher.search(query, IndexConstants.MAXUSEFULDOC);
+            return results.totalHits;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    @Override
+    public int numDocs() {
+        return getReader().numDocs();
+    }
 
 }
