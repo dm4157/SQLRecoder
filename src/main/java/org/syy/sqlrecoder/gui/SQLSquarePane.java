@@ -6,8 +6,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.GridPane;
 import org.springframework.stereotype.Component;
 import org.syy.sqlrecoder.entity.SQLRecoder;
+import org.syy.sqlrecoder.gui.components.ResizeFlowPane;
 import org.syy.sqlrecoder.gui.components.SQLShowerPane;
 
 import java.util.ArrayList;
@@ -27,7 +29,7 @@ public class SQLSquarePane extends ScrollPane {
 
     public SQLSquarePane() {
         recoders = new ArrayList<>();
-        contentPane = new FlowPane();
+        contentPane = new ResizeFlowPane();
         contentPane.setHgap(10);
         contentPane.setVgap(6);
         contentPane.setPadding(new Insets(10));
@@ -61,15 +63,4 @@ public class SQLSquarePane extends ScrollPane {
         }
     }
 
-    /**
-     * 重新装载数据
-     * @param newData
-     */
-    public void reload(List<SQLRecoder> newData) {
-        // 清空数据和显示
-        recoders = new ArrayList<>();
-        this.getChildren().remove(0, this.getChildren().size());
-
-        appendSQLFlow(newData);
-    }
 }

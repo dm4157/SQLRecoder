@@ -15,6 +15,8 @@ import org.syy.sqlrecoder.gui.components.Dialog;
 import org.syy.sqlrecoder.gui.components.RootBorderPane;
 import org.syy.sqlrecoder.service.SQLRecoderService;
 
+import java.util.UUID;
+
 /**
  * 添加SQL记录的界面
  * Created by Administrator on 2015/2/9.
@@ -81,7 +83,7 @@ public class AddRecoderPane extends BorderPane{
         if (StringUtils.isBlank(sqlStr)) {
             Dialog.showMessageDialog(rootBorderPane.getPrimaryStage(), "添加信息", "SQL为空还记录什么啊，二货");
         } else {
-            SQLRecoder sqlRecoder = new SQLRecoder(descriptionStr, sqlStr, System.currentTimeMillis());
+            SQLRecoder sqlRecoder = new SQLRecoder(UUID.randomUUID().toString(),descriptionStr, sqlStr, System.currentTimeMillis());
             try {
                 sqlRecoderService.saveOne(sqlRecoder);
                 Dialog.showMessageDialog(rootBorderPane.getPrimaryStage(), "添加成功","勤记录是好习惯哦！");

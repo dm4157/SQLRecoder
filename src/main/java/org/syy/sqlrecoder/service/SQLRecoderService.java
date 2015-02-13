@@ -8,6 +8,7 @@ import org.syy.sqlrecoder.dao.contract.ISearcher;
 import org.syy.sqlrecoder.dao.contract.IWriter;
 import org.syy.sqlrecoder.entity.SQLRecoder;
 import org.syy.sqlrecoder.exception.SaveSQLRecoderException;
+import org.syy.sqlrecoder.service.contract.ISQLRecoderEditor;
 import org.syy.sqlrecoder.service.contract.ISQLRecoderReader;
 import org.syy.sqlrecoder.service.contract.ISQLRecoderSaver;
 
@@ -18,7 +19,7 @@ import java.util.List;
  * Created by Administrator on 2015/2/9.
  */
 @Service
-public class SQLRecoderService implements ISQLRecoderSaver, ISQLRecoderReader{
+public class SQLRecoderService implements ISQLRecoderSaver, ISQLRecoderReader, ISQLRecoderEditor{
 
     @Autowired
     private IWriter writer;
@@ -105,6 +106,16 @@ public class SQLRecoderService implements ISQLRecoderSaver, ISQLRecoderReader{
     public int numDocsWildcardQuery(String key) {
         Query query = searcher.keyQuery(key, "WA");
         return searcher.numDocsWithCondition(query);
+    }
+
+    @Override
+    public void update(SQLRecoder recoder) {
+        writer.update(recoder);
+    }
+
+    @Override
+    public void delete(SQLRecoder recoder) {
+        writer.delete(recoder.getUuid());
     }
 }
 

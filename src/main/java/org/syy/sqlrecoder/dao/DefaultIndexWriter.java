@@ -1,12 +1,10 @@
 package org.syy.sqlrecoder.dao;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.LongField;
-import org.apache.lucene.document.TextField;
+import org.apache.lucene.document.*;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
@@ -71,15 +69,48 @@ public class DefaultIndexWriter implements IWriter{
      */
     @Override
     public void write(SQLRecoder recoder) {
-        Document doc = new Document();
-        doc.add(new TextField("description", recoder.getDescription(), Field.Store.YES));
-        doc.add(new TextField("sql", recoder.getSql(), Field.Store.YES));
-        doc.add(new LongField("timeToken", recoder.getTimeToken(), Field.Store.YES));
+        Document doc = createDocument(recoder);
         try {
             indexWriter.addDocument(doc);
             indexWriter.commit();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void update(SQLRecoder newRecoder) {
+        Document doc = createDocument(newRecoder);
+        IKAnalyzer analyzer = new IKAnalyzer();
+        try {
+            indexWriter.updateDocument(new Term("uuid", newRecoder.getUuid()), doc, analyzer);
+            indexWriter.commit();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void delete(String uuid) {
+        try {
+            indexWriter.deleteDocuments(new Term("uuid", uuid));
+            indexWriter.commit();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 根据实体类，创建文档
+     * @param recoder
+     * @return
+     */
+    private Document createDocument(SQLRecoder recoder) {
+        Document doc = new Document();
+        doc.add(new StringField("uuid", recoder.getUuid(), Field.Store.YES));
+        doc.add(new TextField("description", recoder.getDescription(), Field.Store.YES));
+        doc.add(new TextField("sql", recoder.getSql(), Field.Store.YES));
+        doc.add(new LongField("timeToken", recoder.getTimeToken(), Field.Store.YES));
+        return doc;
     }
 }

@@ -15,4 +15,12 @@ public interface IWriter {
      * @param recoder
      */
     public void write(SQLRecoder recoder);
+
+    /**
+     * 修改
+     * @param newRecoder
+     */
+    public void update(SQLRecoder newRecoder);
+
+    public void delete(String uuid);
 }

@@ -5,6 +5,7 @@ package org.syy.sqlrecoder.entity;
  * Created by Administrator on 2015/2/8.
  */
 public class SQLRecoder {
+    private String uuid;
     private String description;
     private String sql;
     private long timeToken;
@@ -18,6 +19,14 @@ public class SQLRecoder {
     }
 
     public SQLRecoder(String description, String sql, long timeToken) {
+        this.description = description;
+        this.sql = sql;
+        this.timeToken = timeToken;
+    }
+
+
+    public SQLRecoder(String uuid, String description, String sql, long timeToken) {
+        this.uuid = uuid;
         this.description = description;
         this.sql = sql;
         this.timeToken = timeToken;
@@ -45,5 +54,13 @@ public class SQLRecoder {
 
     public void setTimeToken(long timeToken) {
         this.timeToken = timeToken;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 }

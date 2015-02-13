@@ -112,7 +112,7 @@ public class DefaultIndexSearcher implements ISearcher {
                 List<SQLRecoder> data = new ArrayList<SQLRecoder>();
                 for (int i = (pageNo - 1) * IndexConstants.PAGESIZE; i < Math.min(pageNo * IndexConstants.PAGESIZE, hits.length); i++) {
                     Document doc = searcher.doc(hits[i].doc);
-                    SQLRecoder recoder = new SQLRecoder(doc.get("description"), doc.get("sql"), Long.parseLong(doc.get("timeToken")));
+                    SQLRecoder recoder = new SQLRecoder(doc.get("uuid"), doc.get("description"), doc.get("sql"), Long.parseLong(doc.get("timeToken")));
                     data.add(recoder);
                 }
                 return data;
@@ -192,7 +192,7 @@ public class DefaultIndexSearcher implements ISearcher {
                 List<SQLRecoder> data = new ArrayList<SQLRecoder>();
                 for (int i = (pageNo - 1) * IndexConstants.PAGESIZE; i < Math.min(pageNo * IndexConstants.PAGESIZE, hits.length); i++) {
                     Document doc = searcher.doc(hits[i].doc);
-                    SQLRecoder recoder = new SQLRecoder(doc.get("description"), doc.get("sql"), Long.parseLong(doc.get("timeToken")));
+                    SQLRecoder recoder = new SQLRecoder(doc.get("uuid"), doc.get("description"), doc.get("sql"), Long.parseLong(doc.get("timeToken")));
                     data.add(recoder);
                 }
                 return data;
