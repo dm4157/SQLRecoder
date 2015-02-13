@@ -93,5 +93,18 @@ public class SQLRecoderService implements ISQLRecoderSaver, ISQLRecoderReader{
     public int numDocs() {
         return searcher.numDocs();
     }
+
+    @Override
+    public List<SQLRecoder> wildcardQuery(String key, int pageNo) {
+        Query query = searcher.keyQuery(key, "WA");
+        List<SQLRecoder> data = searcher.getPageWithCondition(query, pageNo);
+        return data;
+    }
+
+    @Override
+    public int numDocsWildcardQuery(String key) {
+        Query query = searcher.keyQuery(key, "WA");
+        return searcher.numDocsWithCondition(query);
+    }
 }
 

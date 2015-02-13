@@ -20,4 +20,7 @@ public interface ISQLRecoderReader {
     public List<SQLRecoder> searchDescriptionOrderByTime(int pageNo);
     public int numDocsWithoutCondition();
     public int numDocs();
+
+    public List<SQLRecoder> wildcardQuery(String key, int pageNo);
+    public int numDocsWildcardQuery(String key);
 }

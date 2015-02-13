@@ -84,6 +84,7 @@ public class RootBorderPane extends BorderPane {
 
     public void showSQLSquare() {
         setCenter(contentPane);
+        createNewPagination();
     }
 
     public Stage getPrimaryStage() {

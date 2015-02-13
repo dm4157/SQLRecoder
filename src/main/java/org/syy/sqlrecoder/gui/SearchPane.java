@@ -77,6 +77,8 @@ public class SearchPane extends BorderPane {
         List<SQLRecoder>  data;
         if (StringUtils.isBlank(key)) {
             data = sqlRecoderService.searchDescriptionOrderByTime(rootBorderPane.getCurrentPage());
+        } else if (key.contains("*") || key.contains("?")) {
+            data = sqlRecoderService.wildcardQuery(key, rootBorderPane.getCurrentPage());
         } else {
             data = sqlRecoderService.searchAllFieldWithCondition(key, rootBorderPane.getCurrentPage());
         }
@@ -92,6 +94,8 @@ public class SearchPane extends BorderPane {
         String key = searchTextField.getText().trim();
         if (StringUtils.isBlank(key)) {
             return sqlRecoderService.numDocsWithoutCondition();
+        } else if (key.contains("*") || key.contains("?")) {
+            return sqlRecoderService.numDocsWildcardQuery(key);
         } else {
             return sqlRecoderService.numDocsForAllField(key);
         }

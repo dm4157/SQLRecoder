@@ -157,6 +157,13 @@ public class DefaultIndexSearcher implements ISearcher {
                 case "*":
                     WildcardQuery wildcardQuery = new WildcardQuery(new Term("sql", "*"));
                     return wildcardQuery;
+                case "WA":
+                    WildcardQuery sqlWildcardQuery = new WildcardQuery(new Term("sql", key));
+                    WildcardQuery descriptionWildcardQuery = new WildcardQuery(new Term("sql", key));
+                    BooleanQuery bq = new BooleanQuery();
+                    bq.add(sqlWildcardQuery, BooleanClause.Occur.SHOULD);
+                    bq.add(descriptionWildcardQuery, BooleanClause.Occur.SHOULD);
+                    return bq;
                 default:
                     String[] fields = {"description", "sql"};
                     QueryParser allParser = new MultiFieldQueryParser(fields, analyzer);

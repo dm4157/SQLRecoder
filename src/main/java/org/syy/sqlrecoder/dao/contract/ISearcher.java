@@ -41,4 +41,5 @@ public interface ISearcher {
      * @return
      */
     public int numDocs();
+
 }
