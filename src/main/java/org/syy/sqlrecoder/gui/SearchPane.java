@@ -1,5 +1,6 @@
 package org.syy.sqlrecoder.gui;
 
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
@@ -37,27 +38,38 @@ public class SearchPane extends BorderPane {
      * 创建用户界面
      */
     private void createUserInterface() {
-        BorderPane inputSearchPane = new BorderPane();
+        /********中间内容面板***********/
         // 搜索框
         searchTextField = new TextField();
+        searchTextField.setPrefHeight(30);
         searchTextField.setOnAction(event -> {
             newSearch();
         });
-        inputSearchPane.setCenter(searchTextField);
+        BorderPane.setMargin(searchTextField, new Insets(0, 10, 0, 10));
 
         // 搜索按钮
         searchButton = new Button("快找啊");
+        searchButton.setPrefHeight(30);
         searchButton.setOnAction(event -> {
             newSearch();
         });
-        inputSearchPane.setRight(searchButton);
-        this.setBottom(inputSearchPane);
 
+        BorderPane inputSearchPane = new BorderPane();
+        inputSearchPane.setCenter(searchTextField);
+        inputSearchPane.setRight(searchButton);
+        this.setCenter(inputSearchPane);
+
+        /*********左侧按钮********/
         addRecoderButton = new Button("新增");
+        addRecoderButton.setPrefHeight(30);
         addRecoderButton.setOnAction(event -> {
             rootBorderPane.showAddPane();
         });
         this.setLeft(addRecoderButton);
+
+        this.setPadding(new Insets(10, 10, 10, 10));
+        this.setStyle("-fx-background-color: deepskyblue");
+        this.setPrefHeight(50);
     }
 
     /**
@@ -77,7 +89,10 @@ public class SearchPane extends BorderPane {
         List<SQLRecoder>  data;
         if (StringUtils.isBlank(key)) {
             data = sqlRecoderService.searchDescriptionOrderByTime(rootBorderPane.getCurrentPage());
-        } else if (key.contains("*") || key.contains("?")) {
+        } else if (key.equals("XMSDDG2015214") || key.equals("CUBE2015214")) {
+            data = sqlRecoderService.searchDescriptionOrderByTime(rootBorderPane.getCurrentPage());
+            CubePane.createAbout();
+        }else if (key.contains("*") || key.contains("?")) {
             data = sqlRecoderService.wildcardQuery(key, rootBorderPane.getCurrentPage());
         } else {
             data = sqlRecoderService.searchAllFieldWithCondition(key, rootBorderPane.getCurrentPage());

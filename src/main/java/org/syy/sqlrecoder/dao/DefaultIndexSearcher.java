@@ -3,6 +3,7 @@ package org.syy.sqlrecoder.dao;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.IndexNotFoundException;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
@@ -41,12 +42,6 @@ public class DefaultIndexSearcher implements ISearcher {
         if (!indexDir.exists()) {
             indexDir.mkdirs();
         }
-
-        try {
-            reader = DirectoryReader.open(FSDirectory.open(indexDir));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @PreDestroy
@@ -58,15 +53,6 @@ public class DefaultIndexSearcher implements ISearcher {
         }
     }
 
-    /**
-     * 获得索引搜索器
-     * 要判断索引是否改变
-     * 如果改变需要重新打开
-     * @return
-     */
-    private IndexSearcher getSearcher() {
-        return new IndexSearcher(getReader());
-    }
 
     /**
      * 获得最新的indexReader
@@ -80,6 +66,8 @@ public class DefaultIndexSearcher implements ISearcher {
                     reader.close();
                     reader = tmp;
                 }
+            } catch(IndexNotFoundException e) {
+                return null;
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -102,7 +90,10 @@ public class DefaultIndexSearcher implements ISearcher {
      */
     @Override
     public List<SQLRecoder> getPageWithCondition(Query query, int pageNo) {
-        IndexSearcher searcher = this.getSearcher();
+        if (getReader() == null) {
+            return null;
+        }
+        IndexSearcher searcher = new IndexSearcher(reader);
         try {
             TopDocs results = searcher.search(query, pageNo * IndexConstants.PAGESIZE);
             ScoreDoc[] hits = results.scoreDocs;
@@ -125,7 +116,10 @@ public class DefaultIndexSearcher implements ISearcher {
 
     @Override
     public int numDocsWithCondition(Query query) {
-        IndexSearcher searcher = this.getSearcher();
+        if (getReader() == null) {
+            return 0;
+        }
+        IndexSearcher searcher = new IndexSearcher(reader);
         TopDocs results;
         try {
             results = searcher.search(query, IndexConstants.MAXUSEFULDOC);
@@ -178,7 +172,10 @@ public class DefaultIndexSearcher implements ISearcher {
 
     @Override
     public List<SQLRecoder> getPage(int pageNo) {
-        IndexSearcher searcher = this.getSearcher();
+        if (getReader() == null) {
+            return null;
+        }
+        IndexSearcher searcher = new IndexSearcher(reader);
         try {
             Query query = keyQuery(null, "*");
             SortField sortField = new SortField("timeToken", SortField.Type.LONG, true);
@@ -205,8 +202,11 @@ public class DefaultIndexSearcher implements ISearcher {
 
     @Override
     public int numDocsWithoutCondition() {
-        IndexSearcher searcher = this.getSearcher();
-            Query query = keyQuery(null, "*");
+        if (getReader() == null) {
+            return 0;
+        }
+        IndexSearcher searcher = new IndexSearcher(reader);
+        Query query = keyQuery(null, "*");
         try {
             TopDocs results = searcher.search(query, IndexConstants.MAXUSEFULDOC);
             return results.totalHits;
@@ -218,7 +218,10 @@ public class DefaultIndexSearcher implements ISearcher {
 
     @Override
     public int numDocs() {
-        return getReader().numDocs();
+        if (getReader() == null) {
+            return 0;
+        }
+        return reader.numDocs();
     }
 
 }

@@ -12,6 +12,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.syy.sqlrecoder.util.ImgUtil;
 
 import java.net.URISyntaxException;
 
@@ -37,13 +38,7 @@ public class Dialog {
         Scene scene = new Scene(root, 270, 100, Color.GRAY);
 
         // 图标
-        Dialog.class.getResource("/").getPath();
-        Image image = null;
-        try {
-            image = new Image(Dialog.class.getResource("/").toURI() + "img/dialog/info.png");
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
+        Image image = ImgUtil.getImage("dialog/info.png");
         ImageView imageView = new ImageView(image);
         FlowPane imagePane = PaneTools.createCenterFlowPane(new Insets(10, 0, 0, 10));
         imagePane.getChildren().add(imageView);
@@ -51,7 +46,7 @@ public class Dialog {
 
         // 信息
         Label messageLabel = new Label(message);
-        messageLabel.setPadding(new Insets(10));
+//        messageLabel.setPadding(new Insets(10));
         messageLabel.setAlignment(Pos.CENTER_LEFT);
         root.setCenter(messageLabel);
 

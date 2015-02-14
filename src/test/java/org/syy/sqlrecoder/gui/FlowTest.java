@@ -32,6 +32,8 @@ public class FlowTest extends Application {
     }
 
     public static void main(String[] args) {
-        launch(args);
+//        launch(args);
+        System.out.println(System.getProperty("pro"));
     }
+
 }

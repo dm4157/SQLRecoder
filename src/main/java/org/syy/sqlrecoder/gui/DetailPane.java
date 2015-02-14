@@ -43,7 +43,8 @@ public class DetailPane extends BorderPane{
     private void createUserInterface() {
         /***** 设置标题栏，包括记录时间， 点击次数等****/
         BorderPane titlePane = new BorderPane();
-        titlePane.setPadding(new Insets(5));
+        titlePane.setPadding(new Insets(10));
+        titlePane.setStyle("-fx-background-color: deepskyblue");
 
         // 修改和删除
         FlowPane buttonPane = new FlowPane();
@@ -91,6 +92,7 @@ public class DetailPane extends BorderPane{
         SplitPane contentPane = new SplitPane();
         contentPane.setOrientation(Orientation.HORIZONTAL);
         contentPane.getItems().addAll(descriptionArea, sqlArea);
+        contentPane.setPadding(new Insets(5, 10, 10, 10));
         /*************容器本身设置**************/
         // 面板布局
         this.setTop(titlePane);

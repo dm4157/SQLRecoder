@@ -1,7 +1,10 @@
 package org.syy.sqlrecoder.gui;
 
 import javafx.event.ActionEvent;
+import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.scene.control.Button;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
@@ -14,6 +17,7 @@ import org.syy.sqlrecoder.exception.SaveSQLRecoderException;
 import org.syy.sqlrecoder.gui.components.Dialog;
 import org.syy.sqlrecoder.gui.components.RootBorderPane;
 import org.syy.sqlrecoder.service.SQLRecoderService;
+import org.syy.sqlrecoder.util.MessageUtil;
 
 import java.util.UUID;
 
@@ -45,30 +49,35 @@ public class AddRecoderPane extends BorderPane{
         BorderPane titlePane = new BorderPane();
 
         cancelButton = new Button("返回");
+        cancelButton.setPrefHeight(30);
         cancelButton.setOnAction(event -> {
             rootBorderPane.showSQLSquare();
         });
         titlePane.setLeft(cancelButton);
 
         doneButton = new Button("记下来");
+        doneButton.setPrefHeight(30);
         doneButton.setOnAction(event -> {
             addActionPerformed(event);
         });
         titlePane.setRight(doneButton);
-
+        titlePane.setPadding(new Insets(10));
+        titlePane.setStyle("-fx-background-color: deepskyblue");
         this.setTop(titlePane);
 
-        // 中间内容，先放两个文本域
-        VBox contentBox = new VBox(5);
-
+        // spiltPane
         sqlArea = new TextArea();
         sqlArea.setPromptText("快把SQL复制过来...");
 
         descriptionArea = new TextArea();
         descriptionArea.setPromptText("写点描述吧，好看也好查...");
 
-        contentBox.getChildren().addAll(sqlArea, descriptionArea);
-        this.setCenter(contentBox);
+        SplitPane contentPane = new SplitPane();
+        contentPane.setPadding(new Insets(10));
+        contentPane.setOrientation(Orientation.VERTICAL);
+        contentPane.getItems().addAll(sqlArea, descriptionArea);
+        this.setCenter(contentPane);
+        this.setPrefHeight(50);
 
     }
 
@@ -86,7 +95,9 @@ public class AddRecoderPane extends BorderPane{
             SQLRecoder sqlRecoder = new SQLRecoder(UUID.randomUUID().toString(),descriptionStr, sqlStr, System.currentTimeMillis());
             try {
                 sqlRecoderService.saveOne(sqlRecoder);
-                Dialog.showMessageDialog(rootBorderPane.getPrimaryStage(), "添加成功","勤记录是好习惯哦！");
+                sqlArea.setText("");
+                descriptionArea.setText("");
+                Dialog.showMessageDialog(rootBorderPane.getPrimaryStage(), "添加成功", MessageUtil.getAddMessage());
             } catch (SaveSQLRecoderException e) {
                 Dialog.showMessageDialog(rootBorderPane.getPrimaryStage(), "添加失败", e.getMessage());
             } catch (IllegalArgumentException e) {

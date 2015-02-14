@@ -5,15 +5,15 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextArea;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.web.HTMLEditor;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.apache.commons.lang3.StringUtils;
@@ -21,7 +21,6 @@ import org.joda.time.DateTime;
 import org.syy.sqlrecoder.bus.SpringContainer;
 import org.syy.sqlrecoder.entity.SQLRecoder;
 import org.syy.sqlrecoder.gui.DetailPane;
-import org.syy.sqlrecoder.util.BorderLayoutUtil;
 
 /**
  * SQL文件展示面板
@@ -39,6 +38,7 @@ public class SQLShowerPane extends BorderPane{
 
     private Timeline showTime;
     private Timeline hideTime;
+
 
     public SQLShowerPane(SQLRecoder recoder) {
         this.recoder = recoder;
@@ -90,6 +90,8 @@ public class SQLShowerPane extends BorderPane{
         GridPane.setConstraints(descriptionArea, 0, 0, 1, 1, HPos.CENTER, VPos.CENTER, Priority.ALWAYS, Priority.ALWAYS);
         GridPane.setConstraints(sqlArea, 0, 1, 1, 1, HPos.CENTER, VPos.CENTER, Priority.ALWAYS, Priority.ALWAYS);
         contentPane.getChildren().addAll(descriptionArea, sqlArea);
+        contentPane.setPadding(new Insets(0, 0, 5, 0));
+
         /*************容器本身设置**************/
         // 面板布局
         this.setTop(titlePane);

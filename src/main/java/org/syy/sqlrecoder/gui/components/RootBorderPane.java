@@ -4,6 +4,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Pagination;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.syy.sqlrecoder.service.SQLRecoderService;
 import org.syy.sqlrecoder.util.PageUtil;
 
 import javax.annotation.PostConstruct;
+import java.awt.*;
 import java.util.List;
 
 /**
@@ -39,20 +41,26 @@ public class RootBorderPane extends BorderPane {
     @Autowired
     private AddRecoderPane addRecoderPane;
 
+//    @Autowired
+//    private TitlePane titlePane;
+
     @Autowired
     private SQLRecoderService sqlRecoderService;
 
     @PostConstruct
     public void createUserInterface() {
-        searchPane.setRootBorderPane(this);
 
+//        /*****标题栏****/
+//        this.setTop(titlePane);
+
+        /******中部内容******/
         contentPane = new BorderPane();
+        searchPane.setRootBorderPane(this);
         contentPane.setTop(searchPane);
-
         //分页
         createNewPagination();
-        contentPane.setCenter(pagination);
 
+        // 设置布局
         this.setCenter(contentPane);
     }
 
