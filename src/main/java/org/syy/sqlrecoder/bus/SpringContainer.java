@@ -69,4 +69,8 @@ public class SpringContainer {
     public <T> T getBean(String beanName, Class<T> classType) {
         return context.getBean(beanName, classType);
     }
+
+    public static void main(String[] args) {
+
+    }
 }
